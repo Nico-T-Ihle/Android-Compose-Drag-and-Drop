@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.nico.module"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nico.module"
