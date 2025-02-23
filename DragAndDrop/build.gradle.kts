@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("maven-publish")
+    kotlin("plugin.compose") version "2.0.0"
 }
 
 android {
@@ -10,9 +11,24 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+    }
+
+    testOptions {
+        targetSdk = 35
+    }
+
+    lint {
+        targetSdk = 35
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+
     }
 
     buildTypes {
@@ -34,14 +50,25 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.compose.runtime:runtime:1.1.0")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(libs.androidx.core.ktx.v160)
+    implementation(libs.androidx.appcompat.v131)
+    implementation(libs.material.v140)
+    implementation(libs.androidx.runtime.v110)
+    implementation(libs.androidx.navigation.compose.v240alpha10)
+    implementation(libs.androidx.material3.android)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit.v113)
+    androidTestImplementation(libs.androidx.espresso.core.v340)
+    implementation(libs.material)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.ui.tooling.preview)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(platform(libs.androidx.compose.bom.v20240200))
+
+
 }
 
 afterEvaluate {
@@ -56,7 +83,7 @@ afterEvaluate {
         }
         repositories {
             maven {
-                url = uri("$buildDir/repo")
+                url = uri(project.layout.buildDirectory.dir("repo").get().asFile.toURI())
             }
         }
     }
