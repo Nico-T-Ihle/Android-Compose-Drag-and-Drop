@@ -13,6 +13,8 @@ It simplifies the process of reordering items in a list or grid, providing a smo
 
 ## Installation and Setup
 
+### [Checkout this link](https://jitpack.io/#Nico-T-Ihle/Android-Compose-Drag-and-Drop/v.0.0.2)
+
 ### 1. Gradle Integration
 
 #### A. Add Dependencies
