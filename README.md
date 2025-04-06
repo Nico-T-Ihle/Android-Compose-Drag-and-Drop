@@ -34,6 +34,14 @@ dependencies {
 4. After you added it everything then type:
 ```
 mvn clean install
+```
+
+5. Integration once you have set up the library as described above, you can directly invoke ExampleDragAndDropList() in your Compose UI code. For example:
 
 ```
-in your terminal project level and your ready to use it :D There is a Example View called ExampleDragAndDropList() as an example.
+@Composable
+fun MyDragAndDropTest() {
+    ExampleDragAndDropList()
+}
+```
+This will display a sample list where you can test the drag-and-drop functionality.
