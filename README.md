@@ -1,4 +1,4 @@
-# Compose Kotlin Android Drag and Drop
+# Android Compose Kotlin Drag and Drop
 
 This library provides easy-to-use Compose methods for enabling drag-and-drop functionality in Android and Desktop applications. With this library, you can easily implement drag-and-drop reordering in a LazyList and LazyGrid using a powerful Jetpack Compose modifier. Whether you're working on a mobile app or a desktop application, this library offers a seamless solution for managing dynamic lists and grids with intuitive drag-and-drop interactions.
 
