@@ -17,6 +17,7 @@ class DragTargetInfo {
     var dragOffset by mutableStateOf(Offset.Zero)
     var draggableComposable by mutableStateOf<(@Composable () -> Unit)?>(null)
     var dataToDrop by mutableStateOf<Any?>(null)
+    var currentDropTarget by mutableStateOf<Any?>(null)
 }
 
 val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
@@ -62,36 +63,48 @@ fun <T> DragTarget(
     isActive: Boolean,
     modifier: Modifier,
     dataToDrop: T,
+    onSwap: (from: T, to: T) -> Unit,
     content: @Composable () -> Unit,
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDragTargetInfo.current
 
-    if(isActive) {
+    if (isActive) {
         Box(
             modifier = modifier
                 .onGloballyPositioned {
                     currentPosition = it.localToWindow(Offset.Zero)
                 }
-                .pointerInput(Unit) {
+                .pointerInput(dataToDrop) {  // <-- dataToDrop statt Unit!
                     detectDragGesturesAfterLongPress(
                         onDragStart = {
                             currentState.dataToDrop = dataToDrop
                             currentState.isDragging = true
                             currentState.dragPosition = currentPosition + it
                             currentState.draggableComposable = content
+                            currentState.currentDropTarget = null
                         },
                         onDrag = { change, dragAmount ->
                             change.consume()
                             currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
                         },
                         onDragEnd = {
+                            val from = currentState.dataToDrop
+                            val to = currentState.currentDropTarget
+                            if (from != null && to != null && from != to) {
+                                @Suppress("UNCHECKED_CAST")
+                                onSwap(from as T, to as T)
+                            }
                             currentState.isDragging = false
                             currentState.dragOffset = Offset.Zero
+                            currentState.dataToDrop = null
+                            currentState.currentDropTarget = null
                         },
                         onDragCancel = {
-                            currentState.dragOffset = Offset.Zero
                             currentState.isDragging = false
+                            currentState.dragOffset = Offset.Zero
+                            currentState.dataToDrop = null
+                            currentState.currentDropTarget = null
                         }
                     )
                 }
@@ -109,7 +122,7 @@ fun <T> DropTarget(
     getDataType: Int,
     item: T? = null,
     modifier: Modifier,
-    content: @Composable (BoxScope.(isInBound: Boolean, data: T?) -> Unit),
+    content: @Composable (BoxScope.(isInBound: Boolean) -> Unit),
 ) {
     val dragInfo = LocalDragTargetInfo.current
     val dragPosition = dragInfo.dragPosition
@@ -119,15 +132,20 @@ fun <T> DropTarget(
     Box(modifier = modifier.onGloballyPositioned {
         it.boundsInWindow().let { rect ->
             if (item != null) {
-                isCurrentDropTarget = if (getDataType == 1 && dragInfo.dataToDrop == item) {
-                    false
-                } else {
-                    rect.contains(dragPosition + dragOffset) && dragInfo.isDragging
+                val isOver = rect.contains(dragPosition + dragOffset) && dragInfo.isDragging
+                val isSameItem = dragInfo.dataToDrop == item
+
+                isCurrentDropTarget = isOver && !isSameItem
+
+                // Aktuelles Drop-Ziel speichern
+                if (isCurrentDropTarget) {
+                    dragInfo.currentDropTarget = item
+                } else if (dragInfo.currentDropTarget == item) {
+                    dragInfo.currentDropTarget = null
                 }
             }
         }
     }) {
-        val data = if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop as T? else null
-        content(isCurrentDropTarget, data)
+        content(isCurrentDropTarget)
     }
 }
