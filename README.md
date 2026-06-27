@@ -226,48 +226,6 @@ dragDropReorderable(
 - Jetpack Compose 1.6.0+
 - AndroidX dependencies
 
-## Testing
-
-### Running Unit Tests
-
-```bash
-./gradlew test
-```
-
-### Running Instrumented Tests
-
-```bash
-./gradlew connectedAndroidTest
-```
-
-### Docker-based Testing
-
-Use Docker to run tests in a containerized environment:
-
-```dockerfile
-FROM ubuntu:22.04
-
-RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
-    git
-
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-
-WORKDIR /app
-COPY . .
-
-RUN chmod +x gradlew
-
-CMD ["./gradlew", "test", "--stacktrace"]
-```
-
-Build and run:
-
-```bash
-docker build -t drag-drop-test .
-docker run --rm -v $(pwd):/app drag-drop-test
-```
-
 ## Troubleshooting
 
 ### Items Not Responding to Drag Interactions
