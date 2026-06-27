@@ -32,7 +32,7 @@ import androidx.compose.ui.zIndex
 @Composable
 fun ExampleDragAndDropList() {
 
-    val useYourList = remember { mutableStateListOf(1, 2, 3) }
+    val useYourList = remember { mutableStateListOf(1, 2, 3, 4, 5, 6) }
 
     fun dragAndDropUpdateList(fromId: Int, toId: Int) {
         val fromIndex = useYourList.indexOf(fromId)
@@ -45,7 +45,8 @@ fun ExampleDragAndDropList() {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.Blue)
+        modifier = Modifier.fillMaxSize().background(Color.Black)
+            .padding(top = 45.dp)
     ) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxHeight(),
@@ -99,7 +100,7 @@ fun ExampleDragAndDropList() {
                                         .width(100.dp)
                                         .fillMaxWidth()
                                         .background(
-                                            if (isInBound) Color.Green else Color.Red
+                                            if (isInBound) Color.Gray else Color.White
                                         )
                                 ) {
                                     Text(text = "$item", fontSize = 16.sp)
